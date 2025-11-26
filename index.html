@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Khảo sát ý kiến, nguyện vọng của người dân</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<style>
+  @font-face{
+    font-family:InterVar;
+    src: local('Inter'), local('Arial');
+  }
+  body{
+    margin:0;
+    font-family: InterVar, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(180deg,#f4f8ff,#ffffff);
+    color:#0f172a;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:28px;
+  }
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+  }
+  .hero{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .logo{
+    width:84px;height:84px;border-radius:12px;overflow:hidden;flex:0 0 84px;background:#fff;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 30px rgba(15,23,42,0.06);
+  }
+  .logo img{max-width:100%;max-height:100%;display:block}
+  h1{font-size:20px;margin:0 0 6px 0}
+  p.lead{margin:0;color:#475569;font-size:14px}
+
+  .card{
+    background:linear-gradient(180deg,#ffffff,#fbfdff);
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 10px 40px rgba(2,6,23,0.04);
+    margin-bottom:18px;
+  }
+
+  /* field buttons grid */
+  .fields{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+  }
+  .field-btn{
+    background:linear-gradient(180deg,#2b7cff,#1f5fd6);
+    color:white;padding:12px;border-radius:12px;border:0;font-weight:700;cursor:pointer;
+    box-shadow:0 8px 20px rgba(43,124,255,0.12);
+    transition:transform .14s ease, box-shadow .14s ease;
+    text-align:center;
+  }
+  .field-btn.secondary{ background:linear-gradient(180deg,#0ea5a4,#047a72); box-shadow:0 8px 20px rgba(14,165,164,0.12); }
+  .field-btn.warn{ background:linear-gradient(180deg,#f97316,#d65d00); box-shadow:0 8px 20px rgba(249,115,22,0.12); }
+  .field-btn:hover{ transform:translateY(-6px) }
+
+  .form-row{ display:flex; gap:14px; margin-top:14px; flex-wrap:wrap; }
+  .form-col{ flex:1; min-width:210px; }
+
+  label{ display:block; font-weight:600; margin-bottom:6px; color:#0f172a; font-size:14px }
+  input, textarea, select{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid #e6eefc; background:#fbfdff;
+    font-size:15px; color:#0f172a;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+  textarea{ min-height:110px; resize:vertical; }
+
+  .actions{ display:flex; gap:12px; margin-top:14px; align-items:center; flex-wrap:wrap; }
+  .btn{
+    border:0; padding:12px 16px; border-radius:12px; cursor:pointer; font-weight:700;
+    box-shadow:0 8px 26px rgba(2,6,23,0.06);
+  }
+  .btn.primary{ background:linear-gradient(180deg,#10b981,#059669); color:white }
+  .btn.ghost{ background:transparent; border:1px solid #e6eefc; color:#0f172a }
+  .btn.export{ background:linear-gradient(180deg,#8b5cf6,#6d28d9); color:white }
+  .btn.reset{ background:linear-gradient(180deg,#ef4444,#dc2626); color:white }
+
+  .note{ color:#6b7280; font-size:13px; margin-top:10px }
+
+  footer{ text-align:center; color:#64748b; font-size:13px; margin-top:18px }
+
+  @media(max-width:720px){
+    .hero{ flex-direction:column; align-items:flex-start}
+    .form-row{ flex-direction:column }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      
+      <div>
+        <h1>Khảo sát ý kiến của người dân về cải cách hành chính - chuyển đổi số - phát triển kinh tế - xã hội</h1>
+       
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:800;margin-bottom:12px">Chọn lĩnh vực</div>
+      <div class="fields" role="list">
+        <button class="field-btn" onclick="selectField('Y tế - Giáo dục')">Y tế - Giáo dục</button>
+        <button class="field-btn secondary" onclick="selectField('Đất đai')">Đất đai</button>
+        <button class="field-btn" onclick="selectField('Nông nghiệp - Môi trường')">Nông nghiệp - Môi trường</button>
+        <button class="field-btn warn" onclick="selectField('Sản xuất - Kinh doanh')">Sản xuất - Kinh doanh</button>
+        <button class="field-btn" onclick="selectField('Chăn nuôi - Thủy sản')">Chăn nuôi - Thủy sản</button>
+        <button class="field-btn secondary" onclick="selectField('Khác')">Khác</button>
+      </div>
+
+      <div id="formArea" style="display:none; margin-top:18px">
+        <div id="otherField" style="display:none;margin-bottom:10px">
+          <label>Lĩnh vực (khác):</label>
+          <input id="otherInput" placeholder="Nhập lĩnh vực khác (ví dụ: Giao thông...)" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label>Họ và tên</label>
+            <input id="name" placeholder="Ví dụ: Nguyễn Văn A">
+          </div>
+          <div class="form-col">
+            <label>Địa chỉ</label>
+            <input id="address" placeholder="Ví dụ: ấp 1, xã Thạnh Quới">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label>Số điện thoại</label>
+            <input id="phone" placeholder="Ví dụ: 09xxxxxxxx">
+          </div>
+          <div class="form-col">
+            <label>Thời điểm (tùy chọn)</label>
+            <input id="time" type="datetime-local" />
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Ý kiến cá nhân</label>
+          <textarea id="opinion" placeholder="Ghi ý kiến, nguyện vọng..."></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="submitBtn" onclick="submitForm()">Gửi khảo sát</button>
+          <button class="btn export" id="exportBtn" onclick="exportExcel()">📥 Xuất Excel (.xlsx)</button>
+          <button class="btn reset" id="resetBtn" onclick="askReset()">🔒 Reset dữ liệu</button>
+        </div>
+
+        <div class="note">Ghi chú: Dữ liệu được lưu theo node "survey" trên Firebase. Reset yêu cầu mật khẩu quản trị.</div>
+      </div>
+    </div>
+
+    <footer>© Trung tâm Phục vụ Hành chính công — Trang khảo sát</footer>
+  </div>
+
+  <!-- ExcelJS + FileSaver (non-module globals) -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+  <!-- Firebase module -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      remove,
+      get,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+    // Firebase config (bạn đã cung cấp)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFIxo2xXu6X4C616cwW6ZbE-pxxLzodrs",
+      authDomain: "danhgiahailong-39491.firebaseapp.com",
+      databaseURL: "https://danhgiahailong-39491-default-rtdb.firebaseio.com",
+      projectId: "danhgiahailong-39491",
+      storageBucket: "danhgiahailong-39491.firebasestorage.app",
+      messagingSenderId: "774652192762",
+      appId: "1:774652192762:web:75370364318e8a81446643"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // UI helpers
+    let selectedField = "";
+
+    window.selectField = function(field) {
+      selectedField = field;
+      document.getElementById('formArea').style.display = 'block';
+      if(field === 'Khác') {
+        document.getElementById('otherField').style.display = 'block';
+      } else {
+        document.getElementById('otherField').style.display = 'none';
+      }
+      // scroll to form
+      setTimeout(()=> document.getElementById('submitBtn').scrollIntoView({behavior:'smooth', block:'center'}), 150);
+    };
+
+    // Submit survey: save to 'survey' node with timestamp
+    window.submitForm = async function() {
+      if(!selectedField) { alert('Vui lòng chọn lĩnh vực trước khi gửi.'); return; }
+
+      let field = selectedField;
+      if(field === 'Khác'){
+        field = (document.getElementById('otherInput').value || '').trim();
+        if(!field){ alert('Vui lòng nhập lĩnh vực khác.'); return; }
+      }
+
+      const payload = {
+        field,
+        name: (document.getElementById('name').value || '').trim(),
+        address: (document.getElementById('address').value || '').trim(),
+        phone: (document.getElementById('phone').value || '').trim(),
+        opinion: (document.getElementById('opinion').value || '').trim(),
+        givenTime: (document.getElementById('time').value) ? new Date(document.getElementById('time').value).toISOString() : null,
+        timestamp: Date.now()
+      };
+
+      try {
+        await push(ref(db, 'survey'), payload);
+        alert('Cảm ơn! Ý kiến của bạn đã được gửi.');
+        // reset form UI
+        document.getElementById('name').value = '';
+        document.getElementById('address').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('opinion').value = '';
+        document.getElementById('time').value = '';
+        document.getElementById('otherInput').value = '';
+        document.getElementById('formArea').style.display = 'none';
+        selectedField = '';
+      } catch (e) {
+        console.error(e);
+        alert('Có lỗi khi gửi dữ liệu — vui lòng thử lại.');
+      }
+    };
+
+    // Export using ExcelJS (set Times New Roman font)
+    window.exportExcel = async function() {
+      try {
+        // Read all survey data once
+        const snapshot = await get(ref(db, 'survey'));
+        const data = snapshot.exists() ? snapshot.val() : {};
+
+        // Create workbook & sheet
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'Khảo sát';
+        workbook.created = new Date();
+        const sheet = workbook.addWorksheet('Khảo sát');
+
+        // Define columns
+        sheet.columns = [
+          { header: 'Lĩnh vực', key: 'field', width: 30 },
+          { header: 'Họ và tên', key: 'name', width: 25 },
+          { header: 'Địa chỉ', key: 'address', width: 40 },
+          { header: 'Số điện thoại', key: 'phone', width: 18 },
+          { header: 'Ý kiến', key: 'opinion', width: 60 },
+          { header: 'Thời điểm khai báo', key: 'givenTime', width: 22 },
+          { header: 'Thời điểm lưu', key: 'timestamp', width: 22 }
+        ];
+
+        // Add rows
+        for(const id in data) {
+          const r = data[id] || {};
+          sheet.addRow({
+            field: r.field || '',
+            name: r.name || '',
+            address: r.address || '',
+            phone: r.phone || '',
+            opinion: r.opinion || '',
+            givenTime: r.givenTime ? new Date(r.givenTime).toLocaleString() : '',
+            timestamp: r.timestamp ? new Date(r.timestamp).toLocaleString() : ''
+          });
+        }
+
+        // Set font for all cells (header + body)
+        sheet.eachRow((row, rowNumber) => {
+          row.eachCell((cell) => {
+            cell.font = { name: 'Times New Roman', size: 12 };
+            // header bold
+            if(rowNumber === 1) cell.font = { name: 'Times New Roman', size: 12, bold: true };
+            cell.alignment = { vertical: 'middle', wrapText: true };
+          });
+        });
+
+        // Auto-filter on header
+        sheet.autoFilter = { from: 'A1', to: 'G1' };
+
+        // Generate buffer and trigger download
+        const buf = await workbook.xlsx.writeBuffer();
+        const now = new Date();
+        const fname = `KhaoSat_${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}.xlsx`;
+        saveAs(new Blob([buf]), fname);
+
+      } catch (err) {
+        console.error('Export error', err);
+        alert('Không xuất được file Excel — kiểm tra console.');
+      }
+    };
+
+    // Ask for password then reset (delete) the 'survey' node
+    window.askReset = function() {
+      const pass = prompt('Nhập mật khẩu để reset dữ liệu:');
+      if(pass === null) return; // user cancelled
+      if(pass === '0342731391') {
+        if(!confirm('Xác nhận: bạn muốn xóa toàn bộ dữ liệu khảo sát?')) return;
+        remove(ref(db, 'survey')).then(()=> {
+          alert('Đã reset dữ liệu.');
+        }).catch(err=>{
+          console.error(err);
+          alert('Lỗi khi reset dữ liệu.');
+        });
+      } else {
+        alert('Sai mật khẩu.');
+      }
+    };
+
+    // Optional: small realtime listener (not necessary) to keep page fresh if admin watching
+    onValue(ref(db, 'survey'), () => {
+      // no-op; this keeps realtime connection active (optional)
+    });
+
+  </script>
+</body>
+</html>
